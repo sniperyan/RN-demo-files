@@ -22,7 +22,7 @@ class MyListItem extends React.PureComponent {
     };
 
     render() {
-        console.log('MyListItem render')
+        //console.log('MyListItem render')
         const {id, title, selected} = this.props
         return (
             <TouchableHighlight
@@ -38,7 +38,7 @@ class MyListItem extends React.PureComponent {
                         <Text style={{fontSize: 30, color: '#fff'}}>{title}</Text>
                         <Text>红色=选中</Text>
                     </View>
-                    <Image style={{height: 100}} source={require('./WX.png')}/>
+                    <View style={{height: 100}} />
                 </View>
 
 
@@ -49,7 +49,7 @@ class MyListItem extends React.PureComponent {
 
 function getMockData() {
     let result = [];
-    for (let i = 0; i < 250; i++) {
+    for (let i = 0; i < 2500; i++) {
         result.push({
             id: i,
             title: `我是title${i}`,
@@ -76,7 +76,7 @@ class DemoFlatList extends React.PureComponent {
 
     _onPressItem = (id) => {
         // updater functions are preferred for transactional updates
-        console.log(this.state.selected.get(id))
+        //console.log(this.state.selected.get(id))
         this.setState((state) => {
             // copy the map rather than modifying state.
             const selected = new Map(state.selected);
@@ -85,14 +85,28 @@ class DemoFlatList extends React.PureComponent {
         });
     };
 
-    _renderItem = ({item}) => (
-        <MyListItem
-            id={item.id}
-            onPressItem={this._onPressItem}
-            selected={!!this.state.selected.get(item.id)}
-            title={item.title}
-        />
-    );
+    _renderItem = ({item,index}) => {
+      //console.log(index)
+      if(index===0){
+        return (
+          <TouchableHighlight onPress={() => this.flatList.scrollToIndex({index:2499})}>
+            <View style={{height: 80, backgroundColor: '#ec0', justifyContent: 'center', alignItems: 'center'}}>
+                <Text>scrollTo2499</Text>
+            </View>
+          </TouchableHighlight>
+        )
+
+      }else{
+        return (
+          <MyListItem
+              id={item.id}
+              onPressItem={this._onPressItem}
+              selected={!!this.state.selected.get(item.id)}
+              title={item.title}
+          />
+        );
+      }
+    }
     onRefresh = () => {
         this.setState({
             isRefreshing: true
@@ -108,6 +122,7 @@ class DemoFlatList extends React.PureComponent {
         return (
             <FlatList
                 ItemSeparatorComponent={SeparatorComponent}
+                ref = {(refs)=>{this.flatList=refs}}
                 ListEmptyComponent={EmptyComponent}
                 ListFooterComponent={ListFooterComponent}
                 ListHeaderComponent={ListHeaderComponent}
@@ -117,7 +132,7 @@ class DemoFlatList extends React.PureComponent {
                 renderItem={this._renderItem}
                 getItemLayout={(data, index) => ({length: 200, offset: 230 * index, index})}
                 initialNumToRender={1}
-                initialScrollIndex={10}
+                initialNumToRender={10}
                 //refreshing={this.state.isRefreshing}
                 //onRefresh={this.onRefresh}
                 refreshControl={
@@ -182,4 +197,3 @@ class ListHeaderComponent extends React.Component {
 
 
 module.exports = DemoFlatList;
-
